@@ -16,7 +16,9 @@ public class PrimeFinderThread extends Thread{
 		this.b = b;
 	}
 
+	@Override
 	public void run(){
+
 		for (int i=a;i<=b;i++){						
 			if (isPrime(i)){
 				primes.add(i);
