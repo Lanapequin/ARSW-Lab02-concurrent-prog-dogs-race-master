@@ -28,11 +28,11 @@ public class Canodromo extends JFrame {
 	/**
 	 * Carriles del canodromo
 	 */
-	private Carril[] carril;
+    private final transient Carril[] carril;
 
-	private JButton butStart = new JButton("Start");
-	private JButton butStop = new JButton("Stop");
-	private JButton butContinue = new JButton("Continue");
+	private final JButton butStart = new JButton("Start");
+	private final JButton butStop = new JButton("Stop");
+	private final JButton butContinue = new JButton("Continue");
 	/**
 	 * Constructor
 	 * 
@@ -114,13 +114,14 @@ public class Canodromo extends JFrame {
         }
 	}
 
-	/**
-	 * Retorna un carril
-	 * 
-	 * @param i
-	 *            Numero del carril
-	 * @return
-	 */
+    /**
+     * Devuelve el carril correspondiente al índice especificado.
+     * Permite acceder a un carril en particular dentro del arreglo de carriles.
+     * Se asume que el índice proporcionado está dentro del rango válido.
+     *
+     * @param i Índice del carril que se desea obtener.
+     * @return El objeto {@code Carril} ubicado en la posición {@code i}.
+     */
 	public Carril getCarril(int i) {
 		return carril[i];
 	}
@@ -129,29 +130,35 @@ public class Canodromo extends JFrame {
 		return carril.length;
 	}
 
-	/**
-	 * Asocia una accion con el boton de start
-	 * 
-	 * @param action
-	 */
+    /**
+     * Asocia una acción al botón de inicio de la carrera.
+     * Permite establecer el comportamiento que se ejecutará cuando el usuario
+     * presione el botón "Start". La acción debe implementarse mediante un {@link ActionListener}.
+     *
+     * @param action El {@code ActionListener} que define la acción a ejecutar al hacer clic en el botón.
+     */
 	public void setStartAction(ActionListener action) {
 		butStart.addActionListener(action);
 	}
 
-	/**
-	 * Asocia una accion con el boton de stop
-	 * 
-	 * @param action
-	 */
+    /**
+     * Asocia una acción al botón de detención de la carrera.
+     * Permite definir el comportamiento que se ejecutará cuando el usuario
+     * presione el botón "Stop". La acción debe estar implementada mediante un {@link ActionListener}.
+     *
+     * @param action El {@code ActionListener} que especifica la lógica a ejecutar al hacer clic en el botón de detener.
+     */
 	public void setStopAction(ActionListener action) {
 		butStop.addActionListener(action);
 	}
 
-	/**
-	 * Asocia una accion con el boton de continuar
-	 * 
-	 * @param action
-	 */
+    /**
+     * Asocia una acción al botón de continuar la carrera.
+     * Permite definir el comportamiento que se ejecutará cuando el usuario
+     * presione el botón "Continue". La acción debe estar implementada mediante un {@link ActionListener}.
+     *
+     * @param action El {@code ActionListener} que especifica la lógica a ejecutar al hacer clic en el botón de continuar.
+     */
 	public void setContinueAction(ActionListener action){
 		butContinue.addActionListener(action);
 	}

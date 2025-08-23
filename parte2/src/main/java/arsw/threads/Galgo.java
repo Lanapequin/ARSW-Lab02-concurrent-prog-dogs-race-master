@@ -1,5 +1,9 @@
 package arsw.threads;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,32 +28,35 @@ public class Galgo extends Thread {
 		this.regl=reg;
 	}
 
-	public void corra() throws InterruptedException {
-		while (paso < carril.size()) {			
-			Thread.sleep(100);
-			carril.setPasoOn(paso++);
-			carril.displayPasos(paso);
-			
-			if (paso == carril.size()) {						
-				carril.finish();
-				int ubicacion=regl.getUltimaPosicionAlcanzada();
-				regl.setUltimaPosicionAlcanzada(ubicacion+1);
-                logger.log(Level.INFO, "El galgo {0} llego en la posicion {1}", new Object[]{this.getName(), ubicacion});
-				if (ubicacion==1){
-					regl.setGanador(this.getName());
-				}
-				
-			}
-		}
-	}
+    @Override
+    public void run() {
+        CountDownLatch latch = new CountDownLatch(1);
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
-	@Override
-	public void run() {
-		try {
-			corra();
-		} catch (InterruptedException e) {
+        executor.scheduleAtFixedRate(() -> {
+            if (paso < carril.size()) {
+                carril.setPasoOn(paso++);
+                carril.displayPasos(paso);
+
+                if (paso == carril.size()) {
+                    carril.finish();
+                    int ubicacion = regl.getUltimaPosicionAlcanzada();
+                    regl.setUltimaPosicionAlcanzada(ubicacion + 1);
+                    logger.log(Level.INFO, "El galgo {0} llegó en la posición {1}", new Object[]{this.getName(), ubicacion});
+                    if (ubicacion == 1) {
+                        regl.setGanador(this.getName());
+                    }
+                    latch.countDown();
+                    executor.shutdown();
+                }
+            }
+        }, 0, 100, TimeUnit.MILLISECONDS);
+
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
             logger.log(Level.WARNING, "Interrupted", e);
             Thread.currentThread().interrupt();
-		}
-	}
+        }
+    }
 }

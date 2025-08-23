@@ -56,11 +56,12 @@ public class Carril {
 		this.name = name;
 	}
 
-	/**
-	 * Tamaño del carril en número de pasos
-	 * 
-	 * @return
-	 */
+    /**
+     * Devuelve el tamaño del carril en número de pasos.
+     * Representadas por el arreglo {@code paso}.
+     *
+     * @return El número total de pasos que conforman el carril.
+     */
 	public int size() {
 		return paso.length;
 	}
@@ -69,30 +70,36 @@ public class Carril {
 		return llegada.getText();
 	}
 
-	/**
-	 * Retorna el i-esimo paso del carril
-	 * 
-	 * @param i
-	 * @return
-	 */
+    /**
+     * Devuelve el botón correspondiente al i-ésimo paso del carril.
+     * Permite acceder a un paso específico del carril, representado como un {@link JButton},
+     * según el índice proporcionado.
+     *
+     * @param i Índice del paso que se desea obtener.
+     * @return El {@code JButton} que representa el paso en la posición {@code i}.
+     */
 	public JButton getPaso(int i) {
 		return paso[i];
 	}
 
-	/**
-	 * Indica que el paso i ha sido utilizado
-	 * 
-	 * @param i
-	 */
+    /**
+     * Marca el i-ésimo paso del carril como utilizado.
+     * Establece el texto del botón correspondiente al paso {@code i} como "o",
+     * indicando visualmente que dicho paso ha sido ocupado durante la carrera.
+     *
+     * @param i Índice del paso que se desea activar.
+     */
 	public void setPasoOn(int i) {
 		paso[i].setText("o");
 	}
 
-	/**
-	 * Indica que el paso i no ha sido utilizado
-	 * 
-	 * @param i
-	 */
+    /**
+     * Marca el i-ésimo paso del carril como no utilizado.
+     * Limpia el texto del botón correspondiente al paso {@code i},
+     * indicando que dicho paso está libre o no ha sido ocupado durante la carrera.
+     *
+     * @param i Índice del paso que se desea desactivar.
+     */
 	public void setPasoOff(int i) {
 		paso[i].setText("");
 	}
@@ -112,9 +119,9 @@ public class Carril {
 	 * Reinicia el carril: ningun paso se ha usado, la bandera abajo.
 	 */
 	public void reStart() {
-		for (int k = 0; k < paso.length; k++) {
-			paso[k].setBackground(off);
-		}
+        for (JButton jButton : paso) {
+            jButton.setBackground(off);
+        }
 		llegada.setBackground(start);
 		llegada.setText(name);
 	}
