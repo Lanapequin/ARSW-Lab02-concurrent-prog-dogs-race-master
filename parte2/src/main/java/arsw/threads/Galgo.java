@@ -1,15 +1,21 @@
 package arsw.threads;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Un galgo que puede correr en un carril
  * 
  * @author rlopez
+ * @author LePeanutButter
+ * @author Lanapequin
  * 
  */
 public class Galgo extends Thread {
 	private int paso;
-	private Carril carril;
+	private final Carril carril;
 	RegistroLlegada regl;
+    Logger logger = Logger.getLogger(getClass().getName());
 
 	public Galgo(Carril carril, String name, RegistroLlegada reg) {
 		super(name);
@@ -28,7 +34,7 @@ public class Galgo extends Thread {
 				carril.finish();
 				int ubicacion=regl.getUltimaPosicionAlcanzada();
 				regl.setUltimaPosicionAlcanzada(ubicacion+1);
-				System.out.println("El galgo "+this.getName()+" llego en la posicion "+ubicacion);
+                logger.log(Level.INFO, "El galgo {0} llego en la posicion {1}", new Object[]{this.getName(), ubicacion});
 				if (ubicacion==1){
 					regl.setGanador(this.getName());
 				}
@@ -37,16 +43,13 @@ public class Galgo extends Thread {
 		}
 	}
 
-
 	@Override
 	public void run() {
-		
 		try {
 			corra();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+            logger.log(Level.WARNING, "Interrupted", e);
+            Thread.currentThread().interrupt();
 		}
-
 	}
-
 }

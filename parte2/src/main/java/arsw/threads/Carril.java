@@ -1,5 +1,8 @@
 package arsw.threads;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.awt.Color;
 
 import javax.swing.JButton;
@@ -8,30 +11,35 @@ import javax.swing.JButton;
  * Un carril del canodromo
  * 
  * @author rlopez
+ * @author LePeanutButter
+ * @author Lanapequin
  * 
  */
+
+@Getter
+@Setter
 public class Carril {
 	private Color on = Color.CYAN;
-	private Color off = Color.LIGHT_GRAY;
+    private static final Color off = Color.LIGHT_GRAY;
 	private Color stop = Color.red;
-	private Color start = Color.GREEN;
+	private static final Color start = Color.GREEN;
 	/**
 	 * Pasos del carril
 	 */
-	private JButton[] paso;
+	private final JButton[] paso;
 
 	/**
 	 * Bandera de llegada del carril
 	 */
-	private JButton llegada;
+	private final JButton llegada;
 
-	private String name;
+	private final String name;
 
 	/**
 	 * Construye un carril
 	 * 
 	 * @param nPasos
-	 *            Numero de pasos del carril
+	 *            Número de pasos del carril
 	 * @param name
 	 *            Nombre del carril
 	 */
@@ -49,7 +57,7 @@ public class Carril {
 	}
 
 	/**
-	 * Tama��o del carril en numero de pasos
+	 * Tamaño del carril en número de pasos
 	 * 
 	 * @return
 	 */
@@ -69,15 +77,6 @@ public class Carril {
 	 */
 	public JButton getPaso(int i) {
 		return paso[i];
-	}
-
-	/**
-	 * Retorna la bandera de llegada del carril
-	 * 
-	 * @return
-	 */
-	public JButton getLlegada() {
-		return llegada;
 	}
 
 	/**

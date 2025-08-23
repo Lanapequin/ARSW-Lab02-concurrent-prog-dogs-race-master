@@ -37,7 +37,7 @@ public class Canodromo extends JFrame {
 	 * Constructor
 	 * 
 	 * @param nCarriles
-	 *            Numero de carriles
+	 *            Número de carriles
 	 * @param longPista
 	 *            Longitud de la pista
 	 */
@@ -109,9 +109,9 @@ public class Canodromo extends JFrame {
 	 * Reinicia cada uno de los carriles
 	 */
 	public void restart() {
-		for (int i = 0; i < carril.length; i++) {
-			carril[i].reStart();
-		}
+        for (Carril value : carril) {
+            value.reStart();
+        }
 	}
 
 	/**
@@ -157,6 +157,6 @@ public class Canodromo extends JFrame {
 	}
 	
 	public void winnerDialog(String winner,int total) {
-            JOptionPane.showMessageDialog(null, "El ganador fue:" + winner + " de un total de " + total);
-        }	
+        JOptionPane.showMessageDialog(null, "El ganador fue:" + winner + " de un total de " + total);
+    }
 }
