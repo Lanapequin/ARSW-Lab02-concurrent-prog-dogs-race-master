@@ -40,12 +40,8 @@ public class Galgo extends Thread {
 
                 if (paso == carril.size()) {
                     carril.finish();
-                    int ubicacion = regl.getUltimaPosicionAlcanzada();
-                    regl.setUltimaPosicionAlcanzada(ubicacion + 1);
+                    int ubicacion = regl.registrarLlegada(this.getName());
                     logger.log(Level.INFO, "El galgo {0} llegó en la posición {1}", new Object[]{this.getName(), ubicacion});
-                    if (ubicacion == 1) {
-                        regl.setGanador(this.getName());
-                    }
                     latch.countDown();
                     executor.shutdown();
                 }
