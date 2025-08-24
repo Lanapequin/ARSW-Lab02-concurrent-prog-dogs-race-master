@@ -3,6 +3,7 @@ package edu.eci.arsw.primefinder;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,6 +26,31 @@ public class Main {
 		firstThread.start();
 		secondThread.start();
 		thirdThread.start();
+
+
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			logger.log(Level.WARNING, "Interrupted", e);
+			Thread.currentThread().interrupt();
+		}
+
+		firstThread.pauseThread();
+		secondThread.pauseThread();
+		thirdThread.pauseThread();
+
+		int totalPrimes = firstThread.getPrimes().size()
+				+ secondThread.getPrimes().size()
+				+ thirdThread.getPrimes().size();
+		logger.log(Level.INFO,"Primes found so far: {0} " , totalPrimes);
+		logger.info("Press ENTER to continue...");
+
+		Scanner scanner = new Scanner(System.in);
+		scanner.nextLine();
+
+		firstThread.resumeThread();
+		secondThread.resumeThread();
+		thirdThread.resumeThread();
 
 		try {
 			firstThread.join();
