@@ -1,5 +1,8 @@
 package arsw.threads;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -20,24 +23,30 @@ import javax.swing.border.EmptyBorder;
  * Interfaz de usuario y modelo para un Canodromo
  * 
  * @author rlopez
+ * @author LePeanutButter
+ * @author Lanapequin
  * 
  */
+
+@Getter
+@Setter
 public class Canodromo extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Carriles del canodromo
 	 */
-	private Carril[] carril;
+    private final transient Carril[] carril;
 
-	private JButton butStart = new JButton("Start");
-	private JButton butStop = new JButton("Stop");
-	private JButton butContinue = new JButton("Continue");
+	private final JButton butStart = new JButton("Start");
+	private final JButton butStop = new JButton("Stop");
+	private final JButton butContinue = new JButton("Continue");
+    private final JButton butRestart = new JButton("Restart");
 	/**
 	 * Constructor
 	 * 
 	 * @param nCarriles
-	 *            Numero de carriles
+	 *            Número de carriles
 	 * @param longPista
 	 *            Longitud de la pista
 	 */
@@ -77,12 +86,7 @@ public class Canodromo extends JFrame {
 		int butHeight = 20;
 		cont.add(panPistas, BorderLayout.NORTH);
 
-		JPanel butPanel = new JPanel();
-		butPanel.setLayout(new FlowLayout());
-		butPanel.add(butStart);
-		butPanel.add(butStop);
-		butPanel.add(butContinue);
-		cont.add(butPanel, BorderLayout.SOUTH);
+        setButPanel(cont);
 
 		this.setSize(butWidht * longPista, butHeight * nCarriles + 400);
 
@@ -105,58 +109,67 @@ public class Canodromo extends JFrame {
 		});
 	}
 
-	/**
-	 * Reinicia cada uno de los carriles
-	 */
-	public void restart() {
-		for (int i = 0; i < carril.length; i++) {
-			carril[i].reStart();
-		}
-	}
+    private void setButPanel(JPanel cont) {
+        JPanel butPanel = new JPanel();
+        butPanel.setLayout(new FlowLayout());
+        butStop.setEnabled(false);
+        butContinue.setEnabled(false);
+        butRestart.setEnabled(false);
+        butPanel.add(butStart);
+        butPanel.add(butStop);
+        butPanel.add(butContinue);
+        butPanel.add(butRestart);
+        cont.add(butPanel, BorderLayout.SOUTH);
+    }
 
-	/**
-	 * Retorna un carril
-	 * 
-	 * @param i
-	 *            Numero del carril
-	 * @return
-	 */
+    /**
+     * Devuelve el carril correspondiente al índice especificado.
+     * Permite acceder a un carril en particular dentro del arreglo de carriles.
+     * Se asume que el índice proporcionado está dentro del rango válido.
+     *
+     * @param i Índice del carril que se desea obtener.
+     * @return El objeto {@code Carril} ubicado en la posición {@code i}.
+     */
 	public Carril getCarril(int i) {
 		return carril[i];
 	}
 
-	public int getNumCarriles() {
-		return carril.length;
-	}
-
-	/**
-	 * Asocia una accion con el boton de start
-	 * 
-	 * @param action
-	 */
+    /**
+     * Asocia una acción al botón de inicio de la carrera.
+     * Permite establecer el comportamiento que se ejecutará cuando el usuario
+     * presione el botón "Start". La acción debe implementarse mediante un {@link ActionListener}.
+     *
+     * @param action El {@code ActionListener} que define la acción a ejecutar al hacer clic en el botón.
+     */
 	public void setStartAction(ActionListener action) {
 		butStart.addActionListener(action);
 	}
 
-	/**
-	 * Asocia una accion con el boton de stop
-	 * 
-	 * @param action
-	 */
+    /**
+     * Asocia una acción al botón de detención de la carrera.
+     * Permite definir el comportamiento que se ejecutará cuando el usuario
+     * presione el botón "Stop". La acción debe estar implementada mediante un {@link ActionListener}.
+     *
+     * @param action El {@code ActionListener} que especifica la lógica a ejecutar al hacer clic en el botón de detener.
+     */
 	public void setStopAction(ActionListener action) {
 		butStop.addActionListener(action);
 	}
 
-	/**
-	 * Asocia una accion con el boton de continuar
-	 * 
-	 * @param action
-	 */
+    /**
+     * Asocia una acción al botón de continuar la carrera.
+     * Permite definir el comportamiento que se ejecutará cuando el usuario
+     * presione el botón "Continue". La acción debe estar implementada mediante un {@link ActionListener}.
+     *
+     * @param action El {@code ActionListener} que especifica la lógica a ejecutar al hacer clic en el botón de continuar.
+     */
 	public void setContinueAction(ActionListener action){
 		butContinue.addActionListener(action);
 	}
-	
+
+    public void setRestartAction(ActionListener action) {butRestart.addActionListener(action);}
+
 	public void winnerDialog(String winner,int total) {
-            JOptionPane.showMessageDialog(null, "El ganador fue:" + winner + " de un total de " + total);
-        }	
+        JOptionPane.showMessageDialog(null, "El ganador fue: " + winner + " de un total de " + total);
+    }
 }
