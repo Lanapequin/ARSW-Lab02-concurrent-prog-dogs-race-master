@@ -1,5 +1,8 @@
 package arsw.threads;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -20,8 +23,13 @@ import javax.swing.border.EmptyBorder;
  * Interfaz de usuario y modelo para un Canodromo
  * 
  * @author rlopez
+ * @author LePeanutButter
+ * @author Lanapequin
  * 
  */
+
+@Getter
+@Setter
 public class Canodromo extends JFrame {
 	private static final long serialVersionUID = 1L;
 
@@ -33,6 +41,7 @@ public class Canodromo extends JFrame {
 	private final JButton butStart = new JButton("Start");
 	private final JButton butStop = new JButton("Stop");
 	private final JButton butContinue = new JButton("Continue");
+    private final JButton butRestart = new JButton("Restart");
 	/**
 	 * Constructor
 	 * 
@@ -82,6 +91,7 @@ public class Canodromo extends JFrame {
 		butPanel.add(butStart);
 		butPanel.add(butStop);
 		butPanel.add(butContinue);
+        butPanel.add(butRestart);
 		cont.add(butPanel, BorderLayout.SOUTH);
 
 		this.setSize(butWidht * longPista, butHeight * nCarriles + 400);
@@ -105,15 +115,6 @@ public class Canodromo extends JFrame {
 		});
 	}
 
-	/**
-	 * Reinicia cada uno de los carriles
-	 */
-	public void restart() {
-        for (Carril value : carril) {
-            value.reStart();
-        }
-	}
-
     /**
      * Devuelve el carril correspondiente al índice especificado.
      * Permite acceder a un carril en particular dentro del arreglo de carriles.
@@ -124,10 +125,6 @@ public class Canodromo extends JFrame {
      */
 	public Carril getCarril(int i) {
 		return carril[i];
-	}
-
-	public int getNumCarriles() {
-		return carril.length;
 	}
 
     /**
@@ -162,8 +159,10 @@ public class Canodromo extends JFrame {
 	public void setContinueAction(ActionListener action){
 		butContinue.addActionListener(action);
 	}
-	
+
+    public void setRestartAction(ActionListener action) {butRestart.addActionListener(action);}
+
 	public void winnerDialog(String winner,int total) {
-        JOptionPane.showMessageDialog(null, "El ganador fue:" + winner + " de un total de " + total);
+        JOptionPane.showMessageDialog(null, "El ganador fue: " + winner + " de un total de " + total);
     }
 }

@@ -18,44 +18,16 @@ Con la implementación de join(), la simulación ahora muestra correctamente al 
 
 ![](img/media/join-fix-gui.png)
 
-2.  Una vez corregido el problema inicial, corra la aplicación varias
-    veces, e identifique las inconsistencias en los resultados de las
-    mismas viendo el ‘ranking’ mostrado en consola (algunas veces
-    podrían salir resultados válidos, pero en otros se pueden presentar
-    dichas inconsistencias). A partir de esto, identifique las regiones
-    críticas () del programa.
+Una vez resuelto el problema inicial, se procedió a probar el programa con el objetivo de identificar posibles regiones críticas. Durante estas pruebas, se observó que dos galgos podían ocupar la misma posición, lo que provocaba que el ganador no siempre fuera el primer galgo en llegar a la meta. Esta situación se debía a que las variables compartidas ultimaPosicionAlcanzada y ganador eran accedidas sin mecanismos de sincronización adecuados.
+
+Para solucionar este problema, se modificó la región crítica correspondiente, ya que varios galgos podían ejecutarla simultáneamente, lo que alteraba el resultado final de la carrera. La solución consistió en crear un método sincronizado dentro de la clase RegistroLlegada, con el fin de garantizar que solo un galgo a la vez pudiera ejecutar dicho bloque de código. De este modo, se evita que dos galgos ocupen la misma posición y se asegura una correcta determinación del ganador.
+
+![](img/media/img2.png)
 
 
-- Se pudo observar que dos galgos podian tomar la misma posición y el ganador podria no ser el primer galgo en llegar, esto se debe a que los galgos accedian a las 
-variables compartidas ultimaPosicionAlcanzada y ganador sin sincronización.
 
 
-3.  Utilice un mecanismo de sincronización para garantizar que a dichas
-    regiones críticas sólo acceda un hilo a la vez. Verifique los
-    resultados.
-
-- Se modifico la region critica porque varios galgos podian ejecutar esa parte al mismo tiempo y alterar el resultado.
-
-  Para esto se creo un método sincronizado en la clase RegistroLlegada, garantizando que solo un galgo a la vez pueda ejecutar ese bloque de codigo, evitando que dos galgos tomen la misma posición.
-
-  ![img2.png](img/media/img2.png)
 4.  Implemente las funcionalidades de pausa y continuar. Con estas,
     cuando se haga clic en ‘Stop’, todos los hilos de los galgos
     deberían dormirse, y cuando se haga clic en ‘Continue’ los mismos
     deberían despertarse y continuar con la carrera. Diseñe una solución que permita hacer esto utilizando los mecanismos de sincronización con las primitivas de los Locks provistos por el lenguaje (wait y notifyAll).
-
-
-## Criterios de evaluación
-
-1. Funcionalidad.
-
-    1.1. La ejecución de los galgos puede ser detenida y resumida consistentemente.
-    
-    1.2. No hay inconsistencias en el orden de llegada registrado.
-    
-2. Diseño.   
-
-    2.1. Se hace una sincronización de sólo la región crítica (sincronizar, por ejemplo, todo un método, bloquearía más de lo necesario).
-    
-    2.2. Los galgos, cuando están suspendidos, son reactivados son sólo un llamado (usando un monitor común).
-

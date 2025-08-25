@@ -93,17 +93,6 @@ public class Carril {
 		paso[i].setText("o");
 	}
 
-    /**
-     * Marca el i-ésimo paso del carril como no utilizado.
-     * Limpia el texto del botón correspondiente al paso {@code i},
-     * indicando que dicho paso está libre o no ha sido ocupado durante la carrera.
-     *
-     * @param i Índice del paso que se desea desactivar.
-     */
-	public void setPasoOff(int i) {
-		paso[i].setText("");
-	}
-
 	/**
 	 * Indica que se ha llegado al final del carril
 	 */
@@ -124,5 +113,9 @@ public class Carril {
         }
 		llegada.setBackground(start);
 		llegada.setText(name);
+
+        for (JButton p : paso) {
+            p.setText("");
+        }
 	}
 }

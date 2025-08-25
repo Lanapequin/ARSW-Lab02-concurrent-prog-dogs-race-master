@@ -1,9 +1,5 @@
 package arsw.threads;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +14,7 @@ import java.util.logging.Logger;
 public class Galgo extends Thread {
 	private int paso;
 	private final Carril carril;
+    private volatile boolean paused = false;
 	RegistroLlegada regl;
     Logger logger = Logger.getLogger(getClass().getName());
 
@@ -28,12 +25,14 @@ public class Galgo extends Thread {
 		this.regl=reg;
 	}
 
+    @SuppressWarnings("BusyWait")
     @Override
     public void run() {
-        CountDownLatch latch = new CountDownLatch(1);
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        boolean finished = false;
 
-        executor.scheduleAtFixedRate(() -> {
+        while (!finished && !Thread.currentThread().isInterrupted()) {
+            paused();
+
             if (paso < carril.size()) {
                 carril.setPasoOn(paso++);
                 carril.displayPasos(paso);
@@ -42,17 +41,40 @@ public class Galgo extends Thread {
                     carril.finish();
                     int ubicacion = regl.registrarLlegada(this.getName());
                     logger.log(Level.INFO, "El galgo {0} llegó en la posición {1}", new Object[]{this.getName(), ubicacion});
-                    latch.countDown();
-                    executor.shutdown();
+                    finished = true;
                 }
             }
-        }, 0, 100, TimeUnit.MILLISECONDS);
 
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            logger.log(Level.WARNING, "Interrupted", e);
-            Thread.currentThread().interrupt();
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                logger.log(Level.WARNING, "Interrupted", e);
+            }
+        }
+    }
+
+    public void pause() {
+        paused = true;
+    }
+
+    public void unpause() {
+        paused = false;
+        synchronized (this) {
+            notifyAll();
+        }
+    }
+
+    private void paused() {
+        synchronized (this) {
+            while (paused) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+            }
         }
     }
 }
