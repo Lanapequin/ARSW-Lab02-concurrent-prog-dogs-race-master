@@ -86,13 +86,7 @@ public class Canodromo extends JFrame {
 		int butHeight = 20;
 		cont.add(panPistas, BorderLayout.NORTH);
 
-		JPanel butPanel = new JPanel();
-		butPanel.setLayout(new FlowLayout());
-		butPanel.add(butStart);
-		butPanel.add(butStop);
-		butPanel.add(butContinue);
-        butPanel.add(butRestart);
-		cont.add(butPanel, BorderLayout.SOUTH);
+        setButPanel(cont);
 
 		this.setSize(butWidht * longPista, butHeight * nCarriles + 400);
 
@@ -114,6 +108,19 @@ public class Canodromo extends JFrame {
 			}
 		});
 	}
+
+    private void setButPanel(JPanel cont) {
+        JPanel butPanel = new JPanel();
+        butPanel.setLayout(new FlowLayout());
+        butStop.setEnabled(false);
+        butContinue.setEnabled(false);
+        butRestart.setEnabled(false);
+        butPanel.add(butStart);
+        butPanel.add(butStop);
+        butPanel.add(butContinue);
+        butPanel.add(butRestart);
+        cont.add(butPanel, BorderLayout.SOUTH);
+    }
 
     /**
      * Devuelve el carril correspondiente al índice especificado.

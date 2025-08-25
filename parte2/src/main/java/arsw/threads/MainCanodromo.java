@@ -5,6 +5,15 @@ import java.util.logging.Logger;
 
 import javax.swing.*;
 
+
+/**
+ *
+ * @author rlopez
+ * @author LePeanutButter
+ * @author Lanapequin
+ *
+ * @version August 24, 2025
+ */
 public class MainCanodromo {
     private static final RegistroLlegada reg = new RegistroLlegada();
     private static final int NUMERO_CARRILES = 17;
@@ -25,6 +34,8 @@ public class MainCanodromo {
     private static void start() {
         can.setStartAction(e -> {
             ((JButton) e.getSource()).setEnabled(false);
+            logger.info("Carrera iniciada!");
+            can.getButStop().setEnabled(true);
             new Thread(() -> {
                 for (int i = 0; i < NUMERO_CARRILES; i++) {
                     galgos[i] = new Galgo(can.getCarril(i), "" + i, reg);
@@ -42,12 +53,17 @@ public class MainCanodromo {
 
                 can.winnerDialog(reg.getGanador(), reg.getUltimaPosicionAlcanzada() - 1);
                 logger.log(Level.INFO, "El ganador fue: {0}", reg.getGanador());
+                SwingUtilities.invokeLater(() -> {
+                    can.getButRestart().setEnabled(true);
+                    can.getButStop().setEnabled(false);
+                });
             }).start();
         });
     }
 
     private static void pause() {
-        can.setStopAction(e ->
+        can.setStopAction(e -> {
+            ((JButton) e.getSource()).setEnabled(false);
             new Thread(() -> {
                 synchronized (galgos) {
                     for (Galgo g : galgos) {
@@ -55,12 +71,18 @@ public class MainCanodromo {
                     }
                 }
                 logger.info("Carrera pausada!");
-            }).start()
-        );
+                SwingUtilities.invokeLater(() -> {
+                    can.getButRestart().setEnabled(true);
+                    can.getButContinue().setEnabled(true);
+                });
+            }).start();
+        });
     }
 
     private static void unpause() {
-        can.setContinueAction(e ->
+        can.setContinueAction(e -> {
+            ((JButton) e.getSource()).setEnabled(false);
+            can.getButRestart().setEnabled(false);
             new Thread(() -> {
                 synchronized (galgos) {
                     for (Galgo g : galgos) {
@@ -69,20 +91,28 @@ public class MainCanodromo {
                 }
 
                 logger.info("Carrera reanudada!");
-            }).start()
-        );
+                SwingUtilities.invokeLater(() -> can.getButStop().setEnabled(true));
+            }).start();
+        });
     }
 
     private static void restart() {
-        can.setRestartAction(e ->
+        can.setRestartAction(e -> {
+            ((JButton) e.getSource()).setEnabled(false);
+            can.getButContinue().setEnabled(false);
+            can.getButStop().setEnabled(false);
+
             new Thread(() -> {
+                reg.reset();
+
                 for (int i = 0; i < NUMERO_CARRILES; i++) {
                     can.getCarril(i).reStart();
+                    galgos[i] = null;
                 }
 
-                SwingUtilities.invokeLater(() -> can.getButStart().setEnabled(true));
                 logger.info("Carrera reiniciada!");
-            }).start()
-        );
+                SwingUtilities.invokeLater(() -> can.getButStart().setEnabled(true));
+            }).start();
+        });
     }
 }

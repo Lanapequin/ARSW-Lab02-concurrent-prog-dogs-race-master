@@ -3,6 +3,15 @@ package arsw.threads;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ *
+ * @author rlopez
+ * @author LePeanutButter
+ * @author Lanapequin
+ *
+ * @version August 24, 2025
+ */
+
 @Getter
 @Setter
 public class RegistroLlegada {
@@ -20,4 +29,8 @@ public class RegistroLlegada {
 		return posicion;
 	}
 
+    public void reset() {
+        this.ultimaPosicionAlcanzada = 1;
+        this.ganador = null;
+    }
 }
