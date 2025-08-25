@@ -1,4 +1,29 @@
-##### Parte II - Simulación de Carreras de Galgos
+# Taller – programación concurrente, condiciones de carrera y sincronización de hilos.
+
+### Integrantes
+- Laura Natalia Perilla Quintero - [Lanapequin](https://github.com/Lanapequin)
+- Santiago Botero Garcia - [LePeanutButter](https://github.com/LePeanutButter)
+
+### Parte I.
+
+1. Revise el programa “primos concurrentes” (en la carpeta parte1), dispuesto en el paquete edu.eci.arsw.primefinder. Este es un programa que calcula los números primos entre dos intervalos, distribuyendo la búsqueda de los mismos entre hilos independientes. Por ahora, tiene un único hilo de ejecución que busca los primos entre 0 y 30.000.000. Ejecútelo, abra el administrador de procesos del sistema operativo, y verifique cuantos núcleos son usados por el mismo.
+![](./img/media/image3.png)
+
+![](./img/media/image4.png)
+
+![](./img/media/image5.png)
+
+2. Modifique el programa para que, en lugar de resolver el problema con un solo hilo, lo haga con tres, donde cada uno de éstos hará la tarcera parte del problema original. Verifique nuevamente el funcionamiento, y nuevamente revise el uso de los núcleos del equipo.
+
+![](./img/media/image6.png)
+
+![](./img/media/image7.png)
+
+3. Lo que se le ha pedido es: debe modificar la aplicación de manera que cuando hayan transcurrido 5 segundos desde que se inició la ejecución, se detengan todos los hilos y se muestre el número de primos encontrados hasta el momento. Luego, se debe esperar a que el usuario presione ENTER para reanudar la ejecución de los mismo.
+
+![img1.png](img/media/img1.png)
+
+### Parte II - Simulación de Carreras de Galgos
 
 En este ejercicio se desarrolla un simulador de carreras de galgos, donde cada galgo es representado por un hilo de ejecución. A nivel de programación, todos los galgos poseen la misma velocidad; por lo tanto, el resultado de la carrera depende del scheduling del procesador. Es decir, el galgo ganador será aquel que, por azar, reciba más ciclos de CPU durante la ejecución.
 
