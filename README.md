@@ -1,77 +1,51 @@
-Escuela Colombiana de Ingeniería
+##### Parte II - Simulación de Carreras de Galgos
 
-Arquitecturas de Software – ARSW
+En este ejercicio se desarrolla un simulador de carreras de galgos, donde cada galgo es representado por un hilo de ejecución. A nivel de programación, todos los galgos poseen la misma velocidad; por lo tanto, el resultado de la carrera depende del scheduling del procesador. Es decir, el galgo ganador será aquel que, por azar, reciba más ciclos de CPU durante la ejecución.
 
-####Taller – programación concurrente, condiciones de carrera y sincronización de hilos. EJERCICIO INDIVIDUAL O EN PAREJAS.
+**Problema Original Detectado**
 
-#####Parte I – Antes de terminar la clase.
+Al iniciar la aplicación, se detecta un error evidente: los resultados de la carrera (distancia recorrida y número del galgo ganador) se muestran antes de que todos los hilos hayan finalizado su ejecución. Esto genera inconsistencias, como la visualización de datos incompletos o nulos en la interfaz gráfica. Además, se identificó la posibilidad de condiciones de carrera que podrían afectar la precisión del resultado final.
 
-Creación, puesta en marcha y coordinación de hilos.
+![](img/media/join-problem-gui.png)
 
-1. Revise el programa “primos concurrentes” (en la carpeta parte1), dispuesto en el paquete edu.eci.arsw.primefinder. Este es un programa que calcula los números primos entre dos intervalos, distribuyendo la búsqueda de los mismos entre hilos independientes. Por ahora, tiene un único hilo de ejecución que busca los primos entre 0 y 30.000.000. Ejecútelo, abra el administrador de procesos del sistema operativo, y verifique cuantos núcleos son usados por el mismo.
+![](img/media/join-problem-console.png)
 
-2. Modifique el programa para que, en lugar de resolver el problema con un solo hilo, lo haga con tres, donde cada uno de éstos hará la tarcera parte del problema original. Verifique nuevamente el funcionamiento, y nuevamente revise el uso de los núcleos del equipo.
+Para garantizar la correcta sincronización entre los hilos y evitar que se muestren resultados prematuros, se implementó el uso de join() en cada hilo. Esta técnica permite que el hilo principal espere a que todos los galgos terminen su recorrido antes de calcular y mostrar el ganador.
 
-3. Lo que se le ha pedido es: debe modificar la aplicación de manera que cuando hayan transcurrido 5 segundos desde que se inició la ejecución, se detengan todos los hilos y se muestre el número de primos encontrados hasta el momento. Luego, se debe esperar a que el usuario presione ENTER para reanudar la ejecución de los mismo.
+![](img/media/join-implemented.png)
 
+Con la implementación de join(), la simulación ahora muestra correctamente al galgo ganador una vez que la carrera ha finalizado por completo, eliminando los errores de sincronización y mejorando la fiabilidad del sistema.
 
+![](img/media/join-fix-gui.png)
 
-#####Parte II 
+Una vez resuelto el problema inicial, se procedió a probar el programa con el objetivo de identificar posibles regiones críticas. Durante estas pruebas, se observó que dos galgos podían ocupar la misma posición, lo que provocaba que el ganador no siempre fuera el primer galgo en llegar a la meta. Esta situación se debía a que las variables compartidas ultimaPosicionAlcanzada y ganador eran accedidas sin mecanismos de sincronización adecuados.
 
+Para solucionar este problema, se modificó la región crítica correspondiente, ya que varios galgos podían ejecutarla simultáneamente, lo que alteraba el resultado final de la carrera. La solución consistió en crear un método sincronizado dentro de la clase RegistroLlegada, con el fin de garantizar que solo un galgo a la vez pudiera ejecutar dicho bloque de código. De este modo, se evita que dos galgos ocupen la misma posición y se asegura una correcta determinación del ganador.
 
-Para este ejercicio se va a trabajar con un simulador de carreras de galgos (carpeta parte2), cuya representación gráfica corresponde a la siguiente figura:
+![](img/media/img2.png)
 
-![](./img/media/image1.png)
+Otro de los problemas detectados en la plataforma estaba relacionado con la implementación de los botones de control (pausa y continuar), ya que inicialmente se encontraban únicamente simulados (mockeados), sin funcionalidad real.
 
-En la simulación, todos los galgos tienen la misma velocidad (a nivel de programación), por lo que el galgo ganador será aquel que (por cuestiones del azar) haya sido más beneficiado por el *scheduling* del
-procesador (es decir, al que más ciclos de CPU se le haya otorgado durante la carrera). El modelo de la aplicación es el siguiente:
+Para implementar correctamente esta funcionalidad, fue necesario recorrer cada instancia de Galgo y suspender su ejecución mediante el uso de wait(). Se incorporó una bandera de control para facilitar la gestión del estado de pausa, y se utilizó notifyAll() para reanudar la ejecución de todos los hilos. Es fundamental que estos métodos estén sincronizados, ya que se trata de una región crítica donde múltiples hilos pueden verse afectados. La correcta sincronización garantiza que todos los hilos se detengan y reanuden de forma coherente, evitando comportamientos indeseados durante la carrera.
 
-![](./img/media/image2.png)
+Por otro lado, para reiniciar la partida, se debe interrumpir la ejecución de los hilos anteriores, establecerlos como nulos, actualizar la interfaz gráfica y reiniciar los puntajes registrados. En los screenshots que se presentan a continuación, puede observarse la implementación funcional de estas características.
 
-Como se observa, los galgos son objetos ‘hilo’ (Thread), y el avance de los mismos es visualizado en la clase Canodromo, que es básicamente un formulario Swing. Todos los galgos (por defecto son 17 galgos corriendo en una pista de 100 metros) comparten el acceso a un objeto de tipo
-RegistroLLegada. Cuando un galgo llega a la meta, accede al contador ubicado en dicho objeto (cuyo valor inicial es 1), y toma dicho valor como su posición de llegada, y luego lo incrementa en 1. El galgo que
-logre tomar el ‘1’ será el ganador.
+![](img/media/pause-unpause-restart-actions.png)
 
-Al iniciar la aplicación, hay un primer error evidente: los resultados (total recorrido y número del galgo ganador) son mostrados antes de que finalice la carrera como tal. Sin embargo, es posible que una vez corregido esto, haya más inconsistencias causadas por la presencia de condiciones de carrera.
+![](img/media/galgo-synchronization.png)
 
-Taller.
+![](img/media/register-restart.png)
 
-1.  Corrija la aplicación para que el aviso de resultados se muestre
-    sólo cuando la ejecución de todos los hilos ‘galgo’ haya finalizado.
-    Para esto tenga en cuenta:
+Con las implementaciones realizadas, se puede evidenciar un funcionamiento correcto tanto en el rendimiento como en la ejecución del programa.
 
-    a.  La acción de iniciar la carrera y mostrar los resultados se realiza a partir de la línea 38 de MainCanodromo.
+Cuando los hilos se encuentran en estado de pausa, la interfaz gráfica se detiene adecuadamente y permanece en espera hasta que se indique reanudar la ejecución:
 
-    b.  Puede utilizarse el método join() de la clase Thread para sincronizar el hilo que inicia la carrera, con la finalización de los hilos de los galgos.
+![](img/media/paused-run.png)
 
-2.  Una vez corregido el problema inicial, corra la aplicación varias
-    veces, e identifique las inconsistencias en los resultados de las
-    mismas viendo el ‘ranking’ mostrado en consola (algunas veces
-    podrían salir resultados válidos, pero en otros se pueden presentar
-    dichas inconsistencias). A partir de esto, identifique las regiones
-    críticas () del programa.
+Al reanudar la partida, la interfaz gráfica retoma su funcionamiento sin inconvenientes, y la lógica del backend continúa ejecutándose correctamente:
 
-3.  Utilice un mecanismo de sincronización para garantizar que a dichas
-    regiones críticas sólo acceda un hilo a la vez. Verifique los
-    resultados.
+![](img/media/unpaused-run.png)
 
-4.  Implemente las funcionalidades de pausa y continuar. Con estas,
-    cuando se haga clic en ‘Stop’, todos los hilos de los galgos
-    deberían dormirse, y cuando se haga clic en ‘Continue’ los mismos
-    deberían despertarse y continuar con la carrera. Diseñe una solución que permita hacer esto utilizando los mecanismos de sincronización con las primitivas de los Locks provistos por el lenguaje (wait y notifyAll).
+Finalmente, al reiniciar la partida (interrumpiendo y eliminando los hilos anteriores), se actualizan tanto la interfaz gráfica como los resultados, lo que permite una gestión completa y coherente de una nueva carrera:
 
-
-## Criterios de evaluación
-
-1. Funcionalidad.
-
-    1.1. La ejecución de los galgos puede ser detenida y resumida consistentemente.
-    
-    1.2. No hay inconsistencias en el orden de llegada registrado.
-    
-2. Diseño.   
-
-    2.1. Se hace una sincronización de sólo la región crítica (sincronizar, por ejemplo, todo un método, bloquearía más de lo necesario).
-    
-    2.2. Los galgos, cuando están suspendidos, son reactivados son sólo un llamado (usando un monitor común).
-
+![](img/media/restarted-run.png)

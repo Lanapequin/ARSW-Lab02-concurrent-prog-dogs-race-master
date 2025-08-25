@@ -1,5 +1,8 @@
 package arsw.threads;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.awt.Color;
 
 import javax.swing.JButton;
@@ -8,30 +11,35 @@ import javax.swing.JButton;
  * Un carril del canodromo
  * 
  * @author rlopez
+ * @author LePeanutButter
+ * @author Lanapequin
  * 
  */
+
+@Getter
+@Setter
 public class Carril {
 	private Color on = Color.CYAN;
-	private Color off = Color.LIGHT_GRAY;
+    private static final Color off = Color.LIGHT_GRAY;
 	private Color stop = Color.red;
-	private Color start = Color.GREEN;
+	private static final Color start = Color.GREEN;
 	/**
 	 * Pasos del carril
 	 */
-	private JButton[] paso;
+	private final JButton[] paso;
 
 	/**
 	 * Bandera de llegada del carril
 	 */
-	private JButton llegada;
+	private final JButton llegada;
 
-	private String name;
+	private final String name;
 
 	/**
 	 * Construye un carril
 	 * 
 	 * @param nPasos
-	 *            Numero de pasos del carril
+	 *            Número de pasos del carril
 	 * @param name
 	 *            Nombre del carril
 	 */
@@ -48,11 +56,12 @@ public class Carril {
 		this.name = name;
 	}
 
-	/**
-	 * Tama��o del carril en numero de pasos
-	 * 
-	 * @return
-	 */
+    /**
+     * Devuelve el tamaño del carril en número de pasos.
+     * Representadas por el arreglo {@code paso}.
+     *
+     * @return El número total de pasos que conforman el carril.
+     */
 	public int size() {
 		return paso.length;
 	}
@@ -61,41 +70,27 @@ public class Carril {
 		return llegada.getText();
 	}
 
-	/**
-	 * Retorna el i-esimo paso del carril
-	 * 
-	 * @param i
-	 * @return
-	 */
+    /**
+     * Devuelve el botón correspondiente al i-ésimo paso del carril.
+     * Permite acceder a un paso específico del carril, representado como un {@link JButton},
+     * según el índice proporcionado.
+     *
+     * @param i Índice del paso que se desea obtener.
+     * @return El {@code JButton} que representa el paso en la posición {@code i}.
+     */
 	public JButton getPaso(int i) {
 		return paso[i];
 	}
 
-	/**
-	 * Retorna la bandera de llegada del carril
-	 * 
-	 * @return
-	 */
-	public JButton getLlegada() {
-		return llegada;
-	}
-
-	/**
-	 * Indica que el paso i ha sido utilizado
-	 * 
-	 * @param i
-	 */
+    /**
+     * Marca el i-ésimo paso del carril como utilizado.
+     * Establece el texto del botón correspondiente al paso {@code i} como "o",
+     * indicando visualmente que dicho paso ha sido ocupado durante la carrera.
+     *
+     * @param i Índice del paso que se desea activar.
+     */
 	public void setPasoOn(int i) {
 		paso[i].setText("o");
-	}
-
-	/**
-	 * Indica que el paso i no ha sido utilizado
-	 * 
-	 * @param i
-	 */
-	public void setPasoOff(int i) {
-		paso[i].setText("");
 	}
 
 	/**
@@ -113,10 +108,14 @@ public class Carril {
 	 * Reinicia el carril: ningun paso se ha usado, la bandera abajo.
 	 */
 	public void reStart() {
-		for (int k = 0; k < paso.length; k++) {
-			paso[k].setBackground(off);
-		}
+        for (JButton jButton : paso) {
+            jButton.setBackground(off);
+        }
 		llegada.setBackground(start);
 		llegada.setText(name);
+
+        for (JButton p : paso) {
+            p.setText("");
+        }
 	}
 }
